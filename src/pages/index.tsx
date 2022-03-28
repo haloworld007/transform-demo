@@ -10,6 +10,12 @@ const buildImport = template(`
   import %%importName%% from %%source%%;
 `);
 
+const buildPage = template(`
+  export const MyPage = () => {
+    %%content%%
+  }
+`);
+
 export default function IndexPage() {
   const ast = parser.parseExpression(JSON.stringify(SCHEMA), {
     sourceType: 'module',

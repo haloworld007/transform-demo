@@ -13,6 +13,14 @@ export const SCHEMA = {
       destructuring: true,
     },
   ],
+  utilsMap: [
+    {
+      name: 'goBack',
+      package: '@seada/utils',
+      version: '1.0.0',
+      destructuring: true,
+    },
+  ],
   page: {
     type: 'void',
     'x-component': 'Page',
