@@ -12,7 +12,9 @@ const buildImport = template(`
 
 const buildPage = template(`
   export const MyPage = () => {
-    %%content%%
+    %%stateContent%%
+
+    return %%jsxContent%%
   }
 `);
 
