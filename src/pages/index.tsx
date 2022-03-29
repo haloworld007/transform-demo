@@ -2,10 +2,9 @@ import * as parser from '@babel/parser';
 import traverse from '@babel/traverse';
 import generate from '@babel/generator';
 import * as t from '@babel/types';
-import template from '@babel/template';
-import { ISchema } from '@formily/react';
+import { ISchema, Schema } from '@formily/react';
 import { SCHEMA } from './const';
-import { buildImport, buildState, buildPage } from './helper';
+import { buildImport, buildState, buildPage, renderProp } from './helper';
 import styles from './index.less';
 
 interface IVar {
@@ -100,6 +99,14 @@ export default function IndexPage() {
               return generate(stateAst).code;
             });
           // 利用properties写jsx
+          const schema = new Schema(obj);
+          const pageChildren = schema.mapProperties((prop) => renderProp(prop));
+          const jsxAst = t.jSXElement(
+            t.jsxOpeningElement(t.jSXIdentifier('Page'), []),
+            t.jsxClosingElement(t.jSXIdentifier('Page')),
+            [...pageChildren],
+          );
+          console.log(generate(jsxAst).code);
         }
       }
     },

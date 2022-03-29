@@ -25,6 +25,7 @@
     "@babel/parser": "^7.17.8",
     "@babel/traverse": "^7.17.3",
     "@babel/types": "^7.17.0",
+    "@formily/json-schema": "^2.0.17",
     "@formily/react": "^2.0.17",
     "react": "17.x",
     "react-dom": "17.x",
