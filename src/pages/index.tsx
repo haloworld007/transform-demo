@@ -5,23 +5,8 @@ import * as t from '@babel/types';
 import template from '@babel/template';
 import { ISchema } from '@formily/react';
 import { SCHEMA } from './const';
+import { buildImport, buildState, buildPage } from './helper';
 import styles from './index.less';
-
-const buildImport = template(`
-  import %%importName%% from %%source%%;
-`);
-
-const buildState = template(`
-  const %%state%% = useState(%%initialValue%%);
-`);
-
-const buildPage = template(`
-  export const MyPage = () => {
-    %%state%%
-
-    return %%jsx%%
-  }
-`);
 
 interface IVar {
   name: string; // 变量名
@@ -114,6 +99,7 @@ export default function IndexPage() {
               }) as t.Statement;
               return generate(stateAst).code;
             });
+          // 利用properties写jsx
         }
       }
     },
