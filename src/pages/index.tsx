@@ -34,19 +34,20 @@ export default function IndexPage() {
     const ast = parser.parseExpression(json, {
       sourceType: 'module',
     });
+    const importArr: t.Statement[] = [];
     traverse(ast, {
       noScope: true,
       ObjectProperty(path) {
         const keyPath = path.get('key');
         const valuePath = path.get('value');
         if (
-          keyPath.isStringLiteral({ value: 'componentsMap' }) &&
+          (keyPath.isStringLiteral({ value: 'componentsMap' }) ||
+            keyPath.isStringLiteral({ value: 'utilsMap' })) &&
           valuePath.isArrayExpression()
         ) {
           path.skip(); // 跳过遍历子节点
           const { elements } = valuePath.node;
           // 遍历elements生成import语句
-          const importArr: t.Statement[] = [];
           elements.forEach((item) => {
             if (t.isObjectExpression(item)) {
               let source = '';
@@ -119,7 +120,11 @@ export default function IndexPage() {
               state: stateArr,
               jsx: jsxAst,
             }) as t.Statement;
-            setCode(generate(ast).code);
+            const importCode = importArr.reduce((prev, cur) => {
+              return prev + generate(cur).code + '\n';
+            }, '');
+            setCode(`${importCode}
+${generate(ast).code}`);
           }
         }
       },
