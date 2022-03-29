@@ -27,8 +27,11 @@
     "@babel/types": "^7.17.0",
     "@formily/json-schema": "^2.0.17",
     "@formily/react": "^2.0.17",
+    "monaco-editor": "^0.33.0",
+    "monaco-editor-webpack-plugin": "^7.0.1",
     "react": "17.x",
     "react-dom": "17.x",
+    "react-monaco-editor": "^0.47.0",
     "umi": "^3.5.21"
   },
   "devDependencies": {

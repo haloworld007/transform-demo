@@ -14,9 +14,7 @@ export const buildPage = template(`
   export const MyPage = () => {
     %%state%%
 
-    return <Page>
-      %%jsx%%
-    </Page>
+    return %%jsx%%
   }
 `);
 
