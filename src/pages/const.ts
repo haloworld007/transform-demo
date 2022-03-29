@@ -32,6 +32,18 @@ export const SCHEMA = {
           dataType: 'string',
           initialValue: 'hello world',
         },
+        {
+          name: 'var2',
+          varType: 'state',
+          dataType: 'number',
+          initialValue: 123,
+        },
+        {
+          name: 'var3',
+          varType: 'state',
+          dataType: 'boolean',
+          initialValue: false,
+        },
       ],
     },
     properties: {

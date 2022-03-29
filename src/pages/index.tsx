@@ -3,6 +3,7 @@ import traverse from '@babel/traverse';
 import generate from '@babel/generator';
 import * as t from '@babel/types';
 import template from '@babel/template';
+import { ISchema } from '@formily/react';
 import { SCHEMA } from './const';
 import styles from './index.less';
 
@@ -10,13 +11,34 @@ const buildImport = template(`
   import %%importName%% from %%source%%;
 `);
 
+const buildState = template(`
+  const %%state%% = useState(%%initialValue%%);
+`);
+
 const buildPage = template(`
   export const MyPage = () => {
-    %%stateContent%%
+    %%state%%
 
-    return %%jsxContent%%
+    return %%jsx%%
   }
 `);
+
+interface IVar {
+  name: string; // 变量名
+  dataType: 'string' | 'number' | 'boolean' | 'array' | 'object' | string; // 变量数据类型
+  varType: 'state' | 'params';
+  initialValue?: string | number | boolean | object | Array<any>; // 初始值
+}
+
+/**
+ * 根据变量名
+ * @param data 变量数据
+ */
+const getVarInitialValue = (data: IVar) => {
+  const { dataType, initialValue } = data;
+  if (dataType === 'string') return t.stringLiteral(String(initialValue));
+  return t.identifier(String(initialValue));
+};
 
 export default function IndexPage() {
   const ast = parser.parseExpression(JSON.stringify(SCHEMA), {
@@ -66,10 +88,33 @@ export default function IndexPage() {
             return generate(importAst).code;
           }
         });
-      } else if (keyPath.isStringLiteral({ value: 'page' })) {
+      } else if (
+        keyPath.isStringLiteral({ value: 'page' }) &&
+        valuePath.isObjectExpression()
+      ) {
         path.skip(); // 跳过遍历子节点
-        // 遍历schema
-        console.log(valuePath);
+        // 还原这个对象表达式，更容易操作
+        const obj: ISchema = JSON.parse(generate(valuePath.node).code);
+        if (obj['x-component'] !== 'Page') {
+          throw new Error('root component must be Page');
+        }
+        if (Array.isArray(obj['x-data']?.['vars'])) {
+          const vars: IVar[] = obj['x-data']['vars'];
+          // 变量Page下定义的变量，写state
+          const stateArr = vars
+            .filter((item) => item.varType === 'state')
+            .map((item) => {
+              const stateAst = buildState({
+                state: t.identifier(
+                  `[${item.name}, set${
+                    item.name[0].toUpperCase() + item.name.slice(1)
+                  }]`,
+                ),
+                initialValue: getVarInitialValue(item),
+              }) as t.Statement;
+              return generate(stateAst).code;
+            });
+        }
       }
     },
   });
