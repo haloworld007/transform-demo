@@ -4,7 +4,7 @@ import traverse from '@babel/traverse';
 import generate from '@babel/generator';
 import * as t from '@babel/types';
 import { ISchema, Schema } from '@formily/react';
-import MonacoEditor from 'react-monaco-editor';
+import Editor from '@monaco-editor/react';
 import { SCHEMA } from './const';
 import { buildImport, buildState, buildPage, renderProp } from './helper';
 import { useEffect } from 'react';
@@ -128,17 +128,17 @@ export default function IndexPage() {
 
   return (
     <div className="wrapper">
-      <MonacoEditor
-        width="600"
-        height="600"
+      <Editor
+        height={600}
+        width={600}
         language="json"
         theme="vs-dark"
         value={json}
-        onChange={(val) => setJson(val)}
+        onChange={(val) => setJson(val || '')}
       />
-      <MonacoEditor
-        width="800"
-        height="600"
+      <Editor
+        width={800}
+        height={600}
         language="javascript"
         theme="vs-dark"
         value={code}
